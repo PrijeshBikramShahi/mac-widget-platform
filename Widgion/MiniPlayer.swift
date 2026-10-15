@@ -8,266 +8,207 @@ import Combine
 //  - Apple Events exception for com.spotify.client
 //  - com.apple.security.network.client
 
-// MARK: - Spotify service
-
-final class SpotifyService: ObservableObject {
-    enum Status { case notRunning, stopped, playing, paused }
-
-    @Published var status: Status = .notRunning
-    @Published var title = ""
-    @Published var artist = ""
-    @Published var artwork: NSImage?
-    @Published var volume: Double = 50
-
-    var isActive: Bool { status == .playing || status == .paused }
-
-    private let bundleID = "com.spotify.client"
-    private var currentTrackID = ""
-    private var lastVolumeSend = Date.distantPast
-    private var observers: [(NotificationCenter, NSObjectProtocol)] = []
-
-    init() {
-        let dnc = DistributedNotificationCenter.default()
-        observers.append((dnc, dnc.addObserver(
-            forName: Notification.Name("com.spotify.client.PlaybackStateChanged"),
-            object: nil, queue: .main) { [weak self] n in
-                self?.handle(n.userInfo ?? [:])
-        }))
-
-        let ws = NSWorkspace.shared.notificationCenter
-        observers.append((ws, ws.addObserver(
-            forName: NSWorkspace.didLaunchApplicationNotification, object: nil, queue: .main) { [weak self] n in
-                guard let self, self.isSpotify(n) else { return }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { self.sync() }
-        }))
-        observers.append((ws, ws.addObserver(
-            forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main) { [weak self] n in
-                guard let self, self.isSpotify(n) else { return }
-                self.reset(.notRunning)
-        }))
-
-        sync()
-    }
-
-    private func isSpotify(_ n: Notification) -> Bool {
-        let app = n.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
-        return app?.bundleIdentifier == bundleID
-    }
-
-    private var isRunning: Bool {
-        !NSRunningApplication.runningApplications(withBundleIdentifier: bundleID).isEmpty
-    }
-
-    // MARK: State updates
-
-    /// Uses the notification's own details; only asks Spotify for the artwork URL, and only on a new track.
-    private func handle(_ info: [AnyHashable: Any]) {
-        switch info["Player State"] as? String ?? "" {
-        case "Playing": status = .playing
-        case "Paused": status = .paused
-        default:
-            reset(isRunning ? .stopped : .notRunning)
-            return
-        }
-        title = info["Name"] as? String ?? title
-        artist = info["Artist"] as? String ?? artist
-        let id = info["Track ID"] as? String ?? ""
-        if id != currentTrackID {
-            currentTrackID = id
-            loadArtwork(forID: id)
-        }
-    }
-
-    /// Full refresh, used at startup and after Spotify relaunches.
-    func sync() {
-        guard isRunning else { reset(.notRunning); return }
-        guard let state = run("return player state as text")?.stringValue else { reset(.stopped); return }
-        if state == "stopped" { reset(.stopped); refreshVolume(); return }
-        status = (state == "playing") ? .playing : .paused
-        if let list = run("return {name of current track, artist of current track, id of current track}") {
-            title = list.atIndex(1)?.stringValue ?? ""
-            artist = list.atIndex(2)?.stringValue ?? ""
-            let id = list.atIndex(3)?.stringValue ?? ""
-            if id != currentTrackID {
-                currentTrackID = id
-                loadArtwork(forID: id)
-            }
-        }
-        refreshVolume()
-    }
-
-    private func reset(_ newStatus: Status) {
-        status = newStatus
-        title = ""
-        artist = ""
-        artwork = nil
-        currentTrackID = ""
-    }
-
-    private func loadArtwork(forID id: String) {
-        guard let s = run("return artwork url of current track")?.stringValue,
-              let url = URL(string: s), url.scheme?.hasPrefix("http") == true else {
-            artwork = nil   // no artwork: the view shows its placeholder
-            return
-        }
-        URLSession.shared.dataTask(with: url) { [weak self] data, _, _ in
-            DispatchQueue.main.async {
-                guard let self, self.currentTrackID == id else { return }  // ignore stale downloads
-                self.artwork = data.flatMap { NSImage(data: $0) }
-            }
-        }.resume()
-    }
-
-    // MARK: Commands
-
-    func previous() { _ = run("previous track") }
-    func playPause() { _ = run("playpause") }
-    func next() { _ = run("next track") }
-
-    func refreshVolume() {
-        if let v = run("return sound volume")?.int32Value { volume = Double(v) }
-    }
-
-    func setVolume(_ v: Double) {
-        volume = v
-        let now = Date()
-        if now.timeIntervalSince(lastVolumeSend) > 0.1 {   // throttle while dragging
-            lastVolumeSend = now
-            _ = run("set sound volume to \(Int(v))")
-        }
-    }
-
-    func commitVolume() {
-        lastVolumeSend = Date()
-        _ = run("set sound volume to \(Int(volume))")
-    }
-
-    // MARK: AppleScript (never runs unless Spotify is already running, so it can't launch it)
-
-    private func run(_ body: String) -> NSAppleEventDescriptor? {
-        guard isRunning else { return nil }
-        let source = "tell application id \"\(bundleID)\"\n\(body)\nend tell"
-        var error: NSDictionary?
-        let result = NSAppleScript(source: source)?.executeAndReturnError(&error)
-        return error == nil ? result : nil
-    }
-}
+// SpotifyService.swift is shared with the Docky widget.
 
 // MARK: - View
 
 struct MiniPlayerView: View {
     @ObservedObject var service: SpotifyService
+    @AppStorage("player.size") private var size = PlayerSize.large
+    @AppStorage("player.artworkOnlyWhenIdle") private var artworkOnlyWhenIdle = false
     @State private var hovering = false
+    @State private var editingVolume = false
 
-    private let side: CGFloat = 240
-    private let showTitleStrip = true   // minimal always-on title line; set false for art only
+    private var controlsVisible: Bool { hovering || editingVolume }
 
     var body: some View {
-        ZStack {
-            artworkLayer
-            if showTitleStrip && !hovering && service.isActive {
-                titleStrip.transition(.opacity)
-            }
-            if hovering && service.isActive {
-                controlsLayer.transition(.opacity)
+        Group {
+            if size == .wide {
+                wideLayout
+            } else {
+                squareLayout
             }
         }
-        .frame(width: side, height: side)
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .frame(width: size.points.width, height: size.points.height)
+        .foregroundStyle(.white)
+        .clipShape(RoundedRectangle(cornerRadius: WidgetGrid.cornerRadius, style: .continuous))
+        .overlay { LayoutOutline() }
         .onHover { h in
             withAnimation(.easeInOut(duration: 0.18)) { hovering = h }
             if h { service.refreshVolume() }
         }
+        .contextMenu {
+            Button("Open Spotify", systemImage: "arrow.up.forward.app") { service.openSpotify() }
+            Divider()
+            Button(service.status == .playing ? "Pause" : "Play",
+                   systemImage: service.status == .playing ? "pause.fill" : "play.fill") { service.playPause() }
+                .disabled(service.status == .notRunning)
+            Button("Previous track", systemImage: "backward.fill") { service.previous() }
+                .disabled(!service.isActive)
+            Button("Next track", systemImage: "forward.fill") { service.next() }
+                .disabled(!service.isActive)
+            Divider()
+            Picker("Size", selection: $size) {
+                ForEach(PlayerSize.allCases) { Text($0.label).tag($0) }
+            }
+            Menu("Volume") {
+                ForEach([0, 25, 50, 75, 100], id: \.self) { value in
+                    Button("\(value)%") {
+                        service.setVolume(Double(value))
+                        service.commitVolume()
+                    }
+                }
+            }
+            .disabled(!service.isActive)
+        }
     }
 
-    private var artworkLayer: some View {
+    private func artwork(width: CGFloat, height: CGFloat) -> some View {
         Group {
             if let art = service.artwork {
                 Image(nsImage: art).resizable().scaledToFill()
             } else {
-                ZStack {
-                    LinearGradient(colors: [.gray.opacity(0.55), .black.opacity(0.85)],
-                                   startPoint: .topLeading, endPoint: .bottomTrailing)
-                    VStack(spacing: 8) {
-                        Image(systemName: "music.note").font(.system(size: 40))
-                        if !service.isActive {
-                            Text(service.status == .notRunning ? "Spotify isn't running" : "Nothing playing")
-                                .font(.system(size: 13, weight: .medium, design: .rounded))
-                        }
+                LinearGradient(colors: [Color(white: 0.28), Color(white: 0.09)],
+                               startPoint: .topLeading, endPoint: .bottomTrailing)
+                    .overlay {
+                        Image(systemName: "music.note")
+                            .font(.system(size: min(width, height) * 0.25))
+                            .foregroundStyle(.white.opacity(0.45))
                     }
-                    .foregroundStyle(.white.opacity(0.85))
-                }
             }
         }
-        .frame(width: side, height: side)
+        .frame(width: width, height: height)
         .clipped()
     }
 
-    /// Minimal always-on line: a soft fade at the bottom with "Title  Artist" on one line.
-    private var titleStrip: some View {
-        ZStack(alignment: .bottomLeading) {
-            LinearGradient(colors: [.clear, .black.opacity(0.5)], startPoint: .top, endPoint: .bottom)
-                .frame(height: 56)
-                .frame(maxHeight: .infinity, alignment: .bottom)
-            (Text(service.title).fontWeight(.semibold)
-                + Text("  \(service.artist)").foregroundColor(.white.opacity(0.7)))
-                .font(.system(size: 12, design: .rounded))
-                .foregroundColor(.white)
-                .lineLimit(1)
-                .shadow(color: .black.opacity(0.5), radius: 3, y: 1)
-                .padding(.horizontal, 14)
-                .padding(.bottom, 12)
+    private var squareLayout: some View {
+        let small = size == .small
+        return ZStack(alignment: .bottom) {
+            artwork(width: size.points.width, height: size.points.height)
+                .onTapGesture(count: 2) { service.openSpotify() }
+                .help("Double-click to open Spotify. Right-click for playback actions.")
+            LinearGradient(stops: [
+                .init(color: .clear, location: 0),
+                .init(color: .black.opacity(0.55), location: 0.45),
+                .init(color: .black.opacity(0.82), location: 1)
+            ], startPoint: .top, endPoint: .bottom)
+                .frame(height: small ? 44 : size.points.height / 3)
+                .opacity(artworkOnlyWhenIdle && !controlsVisible && service.isActive ? 0 : 1)
+                .allowsHitTesting(false)
+            if service.isActive {
+                // Both layers share the bottom inset; hidden controls reserve no space below the title.
+                ZStack(alignment: .bottomLeading) {
+                    trackInfo(titleSize: small ? 10 : 12, showArtist: !small)
+                        .opacity(!artworkOnlyWhenIdle && !controlsVisible ? 1 : 0)
+                        .allowsHitTesting(!artworkOnlyWhenIdle && !controlsVisible)
+                        .accessibilityHidden(artworkOnlyWhenIdle || controlsVisible)
+                    HStack(spacing: 10) {
+                        transport(compact: small)
+                        if !small { volumeSlider }
+                    }
+                    .frame(height: small ? 24 : 32)
+                    .opacity(controlsVisible ? 1 : 0)
+                    .allowsHitTesting(controlsVisible)
+                    .accessibilityHidden(!controlsVisible)
+                }
+                .padding(.horizontal, small ? 10 : 14)
+                .padding(.bottom, small ? 10 : 16)
+            } else {
+                Text(service.status == .notRunning ? "Spotify isn’t running" : "Nothing playing")
+                    .font(.system(size: small ? 10 : 12, weight: .medium, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .padding(small ? 10 : 16)
+            }
         }
-        .frame(width: side, height: side, alignment: .bottomLeading)
-        .allowsHitTesting(false)
     }
 
-    private var controlsLayer: some View {
-        ZStack(alignment: .bottom) {
-            LinearGradient(colors: [.clear, .black.opacity(0.8)],
-                           startPoint: UnitPoint(x: 0.5, y: 0.3), endPoint: .bottom)
-            VStack(spacing: 8) {
-                VStack(spacing: 2) {
-                    Text(service.title)
-                        .font(.system(size: 15, weight: .semibold, design: .rounded))
-                        .lineLimit(1)
-                    Text(service.artist)
-                        .font(.system(size: 12, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.75))
-                        .lineLimit(1)
+    private var wideLayout: some View {
+        ZStack {
+            artwork(width: size.points.width, height: size.points.height)
+                .blur(radius: 18)
+                .overlay(.black.opacity(0.6))
+            HStack(spacing: 10) {
+                artwork(width: 72, height: 72)
+                    .onTapGesture(count: 2) { service.openSpotify() }
+                    .help("Double-click to open Spotify")
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                VStack(alignment: .leading, spacing: 2) {
+                    if service.isActive {
+                        trackInfo(titleSize: 11, showArtist: true)
+                        transport(compact: true)
+                        volumeSlider
+                    } else {
+                        Text(service.status == .notRunning ? "Spotify isn’t running" : "Nothing playing")
+                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-                HStack(spacing: 24) {
-                    controlButton("backward.fill", size: 18) { service.previous() }
-                    controlButton(service.status == .playing ? "pause.fill" : "play.fill", size: 26) { service.playPause() }
-                    controlButton("forward.fill", size: 18) { service.next() }
-                }
-                HStack(spacing: 6) {
-                    Image(systemName: "speaker.fill").font(.system(size: 10))
-                    Slider(value: volumeBinding, in: 0...100, onEditingChanged: { editing in
-                        if !editing { service.commitVolume() }
-                    })
-                    .tint(.white)
-                    Image(systemName: "speaker.wave.3.fill").font(.system(size: 10))
-                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 14)
+            .padding(11)
         }
+    }
+
+    private func trackInfo(titleSize: CGFloat, showArtist: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(service.title.isEmpty ? "Unknown track" : service.title)
+                .font(.system(size: titleSize, weight: .semibold, design: .rounded))
+                .lineLimit(size == .large ? 2 : 1)
+                .fixedSize(horizontal: false, vertical: true)
+                .help(service.title)
+            if showArtist {
+                Text(service.artist)
+                    .font(.system(size: size == .wide ? 9 : 11, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.75))
+                    .lineLimit(1)
+                    .help(service.artist)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .shadow(color: .black.opacity(0.2), radius: 1, y: 0.5)
+    }
+
+    private func transport(compact: Bool) -> some View {
+        HStack(spacing: 0) {
+            controlButton("backward.fill", label: "Previous track", compact: compact) { service.previous() }
+            Spacer(minLength: 0)
+            controlButton(service.status == .playing ? "pause.fill" : "play.fill",
+                          label: service.status == .playing ? "Pause" : "Play",
+                          compact: compact, primary: true) { service.playPause() }
+            Spacer(minLength: 0)
+            controlButton("forward.fill", label: "Next track", compact: compact) { service.next() }
+        }
+        .frame(maxWidth: compact ? .infinity : 100)
+    }
+
+    private var volumeSlider: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "speaker.fill").font(.system(size: 8))
+                .accessibilityHidden(true)
+            PlayerVolumeSlider(value: volumeBinding, onEditingChanged: { editingVolume = $0 },
+                               onCommit: { service.commitVolume() })
+        }
+        .frame(height: 14)
     }
 
     private var volumeBinding: Binding<Double> {
         Binding(get: { service.volume }, set: { service.setVolume($0) })
     }
 
-    private func controlButton(_ symbol: String, size: CGFloat, action: @escaping () -> Void) -> some View {
+    private func controlButton(_ symbol: String, label: String, compact: Bool,
+                               primary: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: size, weight: .semibold))
-                .frame(width: 36, height: 36)
+                .font(.system(size: compact ? (primary ? 13 : 10) : (primary ? 16 : 12), weight: .semibold))
+                .frame(width: compact ? 24 : (primary ? 32 : 28), height: compact ? 24 : 32)
+                .background {
+                    if primary { Circle().fill(.white.opacity(0.14)) }
+                }
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .help(label)
     }
 }
 
@@ -281,11 +222,13 @@ final class FirstMouseHostingView<Content: View>: NSHostingView<Content> {
 enum MiniPlayerWindow {
     private static var panel: NSPanel?
     private static let service = SpotifyService()
+    private static var settingsObserver: NSObjectProtocol?
+    private static var appliedEnabled = true
 
     static func show() {
         guard panel == nil else { return }
-        let side: CGFloat = 240
-        let p = NSPanel(contentRect: NSRect(x: 200, y: 200, width: side, height: side),
+        let size = Prefs.playerSize.points
+        let p = LayoutPanel(contentRect: NSRect(origin: NSPoint(x: 200, y: 200), size: size),
                         styleMask: [.borderless, .nonactivatingPanel],
                         backing: .buffered, defer: false)
         p.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) + 1)
@@ -295,18 +238,44 @@ enum MiniPlayerWindow {
         p.hasShadow = false
         p.hidesOnDeactivate = false
         p.isReleasedWhenClosed = false
-        p.isMovableByWindowBackground = true
-        p.contentView = FirstMouseHostingView(rootView: MiniPlayerView(service: service))
+        LayoutController.shared.register(p)
+        let host = FirstMouseHostingView(rootView: MiniPlayerView(service: service))
+        host.sizingOptions = []
+        p.contentView = host
 
         // Remember position between launches.
         if !p.setFrameUsingName("MiniPlayer") { p.center() }
         p.setFrameAutosaveName("MiniPlayer")
 
-        p.orderFrontRegardless()
         panel = p
+        resizeToPreference() // A saved frame may still contain the old 240-point size.
+        settingsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification, object: nil, queue: .main
+        ) { _ in
+            MainActor.assumeIsolated {
+                resizeToPreference()
+                let enabled = UserDefaults.standard.bool(forKey: "player.enabled")
+                if enabled != appliedEnabled {
+                    appliedEnabled = enabled
+                    if enabled { panel?.orderFrontRegardless() } else { panel?.orderOut(nil) }
+                }
+            }
+        }
+        appliedEnabled = UserDefaults.standard.bool(forKey: "player.enabled")
+        if appliedEnabled { p.orderFrontRegardless() }
     }
+    private static func resizeToPreference() {
+        guard let panel else { return }
+        let size = Prefs.playerSize.points
+        let frame = panel.frame
+        guard frame.size != size else { return }
+        // Anchor the top-left corner, matching the other desktop widgets.
+        panel.setFrame(NSRect(x: frame.minX, y: frame.maxY - size.height,
+                              width: size.width, height: size.height), display: true)
+    }
+
     static func toggle() {
         guard let p = panel else { show(); return }
-        if p.isVisible { p.orderOut(nil) } else { p.orderFrontRegardless() }
+        UserDefaults.standard.set(!p.isVisible, forKey: "player.enabled")
     }
 }

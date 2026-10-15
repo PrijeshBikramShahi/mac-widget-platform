@@ -3,14 +3,20 @@ import AppKit
 
 final class MiniAppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
+        Prefs.register()
+        DesktopWidgetManager.shared.start()
         MiniPlayerWindow.show()
     }
 }
 
 struct MenuContent: View {
     @Environment(\.openWindow) private var openWindow
+    @ObservedObject private var layout = LayoutController.shared
 
     var body: some View {
+        Toggle("Edit layout", isOn: $layout.isEditing)
+        Divider()
+        Button("Show / Hide Widgets") { DesktopWidgetManager.shared.toggleVisibility() }
         Button("Show / Hide Player") { MiniPlayerWindow.toggle() }
         Button("Settings…") {
             openWindow(id: "settings")
@@ -31,7 +37,7 @@ struct WidgionApp: App {
             MenuContent()
         }
         Window("Widgion Settings", id: "settings") {
-            ContentView()
+            SettingsView()
         }
         .windowResizability(.contentSize)
     }

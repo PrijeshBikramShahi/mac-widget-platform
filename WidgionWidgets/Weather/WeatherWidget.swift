@@ -8,6 +8,13 @@ struct CachedWeather: Codable {
     let code: Int
     let isDay: Bool
     let fetchedAt: Date
+    var observedAt: Date? = nil
+
+    func isStale(at date: Date) -> Bool {
+        guard let observedAt else { return true }
+        return date.timeIntervalSince(observedAt) >= WeatherRepo.maxAge
+            || date.timeIntervalSince(fetchedAt) >= WeatherRepo.maxAge
+    }
 }
 
 enum WeatherRepo {
@@ -21,19 +28,20 @@ enum WeatherRepo {
 
     static func load() async -> CachedWeather? {
         let old = cached()
-        if let old, Date().timeIntervalSince(old.fetchedAt) < maxAge { return old }
+        if let old, !old.isStale(at: .now) { return old }
 
         var comps = URLComponents(string: "https://api.open-meteo.com/v1/forecast")!
         comps.queryItems = [
             URLQueryItem(name: "latitude", value: String(WidgionConfig.weatherLat)),
             URLQueryItem(name: "longitude", value: String(WidgionConfig.weatherLon)),
             URLQueryItem(name: "current", value: "temperature_2m,weather_code,is_day"),
-            URLQueryItem(name: "timezone", value: "auto"),
+            URLQueryItem(name: "timeformat", value: "unixtime"),
         ]
         guard let url = comps.url else { return old }
 
         struct Response: Decodable {
             struct Current: Decodable {
+                let time: Double
                 let temperature_2m: Double
                 let weather_code: Int
                 let is_day: Int
@@ -42,12 +50,14 @@ enum WeatherRepo {
         }
 
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, response) = try await URLSession.shared.data(for: URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 30))
+            guard let response = response as? HTTPURLResponse, (200..<300).contains(response.statusCode) else { return old }
             let r = try JSONDecoder().decode(Response.self, from: data)
             let fresh = CachedWeather(tempC: r.current.temperature_2m,
                                       code: r.current.weather_code,
                                       isDay: r.current.is_day == 1,
-                                      fetchedAt: Date())
+                                      fetchedAt: Date(),
+                                      observedAt: Date(timeIntervalSince1970: r.current.time))
             UserDefaults.standard.set(try? JSONEncoder().encode(fresh), forKey: key)
             return fresh
         } catch {
@@ -59,7 +69,8 @@ enum WeatherRepo {
 func describe(code: Int, isDay: Bool) -> (label: String, symbol: String) {
     switch code {
     case 0: return ("Clear", isDay ? "sun.max.fill" : "moon.stars.fill")
-    case 1, 2: return ("Partly cloudy", isDay ? "cloud.sun.fill" : "cloud.moon.fill")
+    case 1: return ("Mainly clear", isDay ? "sun.max.fill" : "moon.stars.fill")
+    case 2: return ("Partly cloudy", isDay ? "cloud.sun.fill" : "cloud.moon.fill")
     case 3: return ("Overcast", "cloud.fill")
     case 45, 48: return ("Fog", "cloud.fog.fill")
     case 51...57: return ("Drizzle", "cloud.drizzle.fill")
@@ -79,7 +90,7 @@ struct WeatherEntry: TimelineEntry {
 
 struct WeatherProvider: TimelineProvider {
     func placeholder(in context: Context) -> WeatherEntry {
-        WeatherEntry(date: .now, weather: CachedWeather(tempC: 22, code: 1, isDay: true, fetchedAt: .now))
+        WeatherEntry(date: .now, weather: CachedWeather(tempC: 22, code: 1, isDay: true, fetchedAt: .now, observedAt: .now))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (WeatherEntry) -> Void) {
@@ -89,8 +100,12 @@ struct WeatherProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherEntry>) -> Void) {
         Task {
             let w = await WeatherRepo.load()
-            let next = Date().addingTimeInterval(WeatherRepo.maxAge)
-            completion(Timeline(entries: [WeatherEntry(date: .now, weather: w)], policy: .after(next)))
+            let now = Date()
+            let expiry = min(w?.observedAt ?? now, w?.fetchedAt ?? now).addingTimeInterval(WeatherRepo.maxAge)
+            let next = max(now.addingTimeInterval(60), expiry)
+            var entries = [WeatherEntry(date: now, weather: w)]
+            if expiry > now { entries.append(WeatherEntry(date: expiry, weather: w)) }
+            completion(Timeline(entries: entries, policy: .after(next)))
         }
     }
 }
@@ -116,7 +131,7 @@ struct WeatherView: View {
                     Text(info.label)
                         .font(.system(size: 14, weight: .medium, design: .rounded))
                         .lineLimit(1)
-                    Text("Open-Meteo.com · updated \(w.fetchedAt.formatted(date: .omitted, time: .shortened))")
+                    Text("\(w.isStale(at: entry.date) ? "Old data" : "Current") · \((w.observedAt ?? w.fetchedAt).formatted(date: .omitted, time: .shortened)) · Open-Meteo.com")
                         .font(.system(size: 9))
                         .foregroundStyle(.tertiary)
                         .lineLimit(1)

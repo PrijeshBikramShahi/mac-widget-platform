@@ -55,6 +55,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+        CA1E00000000000000000001 /* Shared */ = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            path = Shared;
+            sourceTree = "<group>";
+        };
 		24956CF0307FFF85009274C1 /* Widgion */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Widgion;
@@ -93,6 +98,7 @@
 		24956CE5307FFF85009274C1 = {
 			isa = PBXGroup;
 			children = (
+                CA1E00000000000000000001 /* Shared */,
 				24A59C913080899500443504 /* WidgionWidget.entitlements */,
 				24956CF0307FFF85009274C1 /* Widgion */,
 				24956D06307FFFC2009274C1 /* WidgionWidgets */,
@@ -137,6 +143,7 @@
 				24956D13307FFFC5009274C1 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+                CA1E00000000000000000001 /* Shared */,
 				24956CF0307FFF85009274C1 /* Widgion */,
 			);
 			name = Widgion;
@@ -159,6 +166,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+                CA1E00000000000000000001 /* Shared */,
 				24956D06307FFFC2009274C1 /* WidgionWidgets */,
 			);
 			name = WidgionWidget;

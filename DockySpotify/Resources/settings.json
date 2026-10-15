@@ -1,0 +1,5 @@
+{
+  "fields": [
+    {"id": "artworkBackground", "type": "toggle", "label": "Tint background with album artwork", "default": true}
+  ]
+}
