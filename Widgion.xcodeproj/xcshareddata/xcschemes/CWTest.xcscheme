@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "24956CED307FFF85009274C1"
-               BuildableName = "CWTest.app"
-               BlueprintName = "CWTest"
-               ReferencedContainer = "container:CWTest.xcodeproj">
+               BuildableName = "Widgion.app"
+               BlueprintName = "Widgion"
+               ReferencedContainer = "container:Widgion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "24956CED307FFF85009274C1"
-            BuildableName = "CWTest.app"
-            BlueprintName = "CWTest"
-            ReferencedContainer = "container:CWTest.xcodeproj">
+            BuildableName = "Widgion.app"
+            BlueprintName = "Widgion"
+            ReferencedContainer = "container:Widgion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -63,9 +63,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "24956CED307FFF85009274C1"
-            BuildableName = "CWTest.app"
-            BlueprintName = "CWTest"
-            ReferencedContainer = "container:CWTest.xcodeproj">
+            BuildableName = "Widgion.app"
+            BlueprintName = "Widgion"
+            ReferencedContainer = "container:Widgion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -17,9 +17,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "24956CFF307FFFC2009274C1"
-               BuildableName = "CWTestWidgetExtension.appex"
-               BlueprintName = "CWTestWidgetExtension"
-               ReferencedContainer = "container:CWTest.xcodeproj">
+               BuildableName = "WidgionWidget.appex"
+               BlueprintName = "WidgionWidget"
+               ReferencedContainer = "container:Widgion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -31,9 +31,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "24956CED307FFF85009274C1"
-               BuildableName = "CWTest.app"
-               BlueprintName = "CWTest"
-               ReferencedContainer = "container:CWTest.xcodeproj">
+               BuildableName = "Widgion.app"
+               BlueprintName = "Widgion"
+               ReferencedContainer = "container:Widgion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -65,18 +65,18 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "24956CFF307FFFC2009274C1"
-            BuildableName = "CWTestWidgetExtension.appex"
-            BlueprintName = "CWTestWidgetExtension"
-            ReferencedContainer = "container:CWTest.xcodeproj">
+            BuildableName = "WidgionWidget.appex"
+            BlueprintName = "WidgionWidget"
+            ReferencedContainer = "container:Widgion.xcodeproj">
          </BuildableReference>
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "24956CED307FFF85009274C1"
-            BuildableName = "CWTest.app"
-            BlueprintName = "CWTest"
-            ReferencedContainer = "container:CWTest.xcodeproj">
+            BuildableName = "Widgion.app"
+            BlueprintName = "Widgion"
+            ReferencedContainer = "container:Widgion.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <EnvironmentVariables>
@@ -110,9 +110,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "24956CED307FFF85009274C1"
-            BuildableName = "CWTest.app"
-            BlueprintName = "CWTest"
-            ReferencedContainer = "container:CWTest.xcodeproj">
+            BuildableName = "Widgion.app"
+            BlueprintName = "Widgion"
+            ReferencedContainer = "container:Widgion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

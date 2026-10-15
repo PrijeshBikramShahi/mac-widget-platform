@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		24956D03307FFFC2009274C1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24956D02307FFFC2009274C1 /* WidgetKit.framework */; };
 		24956D05307FFFC2009274C1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24956D04307FFFC2009274C1 /* SwiftUI.framework */; };
-		24956D14307FFFC5009274C1 /* CWTestWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 24956D00307FFFC2009274C1 /* CWTestWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		24956D14307FFFC5009274C1 /* WidgionWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 24956D00307FFFC2009274C1 /* WidgionWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +29,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				24956D14307FFFC5009274C1 /* CWTestWidgetExtension.appex in Embed Foundation Extensions */,
+				24956D14307FFFC5009274C1 /* WidgionWidget.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -37,34 +37,34 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		24956CEE307FFF85009274C1 /* CWTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CWTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		24956D00307FFFC2009274C1 /* CWTestWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CWTestWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		24956CEE307FFF85009274C1 /* Widgion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Widgion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		24956D00307FFFC2009274C1 /* WidgionWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgionWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		24956D02307FFFC2009274C1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		24956D04307FFFC2009274C1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		24956D15307FFFC5009274C1 /* Exceptions for "CWTestWidget" folder in "CWTestWidgetExtension" target */ = {
+		24956D15307FFFC5009274C1 /* Exceptions for "WidgionWidgets" folder in "WidgionWidget" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 24956CFF307FFFC2009274C1 /* CWTestWidgetExtension */;
+			target = 24956CFF307FFFC2009274C1 /* WidgionWidget */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		24956CF0307FFF85009274C1 /* CWTest */ = {
+		24956CF0307FFF85009274C1 /* Widgion */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = CWTest;
+			path = Widgion;
 			sourceTree = "<group>";
 		};
-		24956D06307FFFC2009274C1 /* CWTestWidget */ = {
+		24956D06307FFFC2009274C1 /* WidgionWidgets */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				24956D15307FFFC5009274C1 /* Exceptions for "CWTestWidget" folder in "CWTestWidgetExtension" target */,
+				24956D15307FFFC5009274C1 /* Exceptions for "WidgionWidgets" folder in "WidgionWidget" target */,
 			);
-			path = CWTestWidget;
+			path = WidgionWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -92,8 +92,8 @@
 		24956CE5307FFF85009274C1 = {
 			isa = PBXGroup;
 			children = (
-				24956CF0307FFF85009274C1 /* CWTest */,
-				24956D06307FFFC2009274C1 /* CWTestWidget */,
+				24956CF0307FFF85009274C1 /* Widgion */,
+				24956D06307FFFC2009274C1 /* WidgionWidgets */,
 				24956D01307FFFC2009274C1 /* Frameworks */,
 				24956CEF307FFF85009274C1 /* Products */,
 			);
@@ -102,8 +102,8 @@
 		24956CEF307FFF85009274C1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				24956CEE307FFF85009274C1 /* CWTest.app */,
-				24956D00307FFFC2009274C1 /* CWTestWidgetExtension.appex */,
+				24956CEE307FFF85009274C1 /* Widgion.app */,
+				24956D00307FFFC2009274C1 /* WidgionWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -120,9 +120,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		24956CED307FFF85009274C1 /* CWTest */ = {
+		24956CED307FFF85009274C1 /* Widgion */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 24956CF9307FFF87009274C1 /* Build configuration list for PBXNativeTarget "CWTest" */;
+			buildConfigurationList = 24956CF9307FFF87009274C1 /* Build configuration list for PBXNativeTarget "Widgion" */;
 			buildPhases = (
 				24956CEA307FFF85009274C1 /* Sources */,
 				24956CEB307FFF85009274C1 /* Frameworks */,
@@ -135,18 +135,18 @@
 				24956D13307FFFC5009274C1 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				24956CF0307FFF85009274C1 /* CWTest */,
+				24956CF0307FFF85009274C1 /* Widgion */,
 			);
-			name = CWTest;
+			name = Widgion;
 			packageProductDependencies = (
 			);
 			productName = CWTest;
-			productReference = 24956CEE307FFF85009274C1 /* CWTest.app */;
+			productReference = 24956CEE307FFF85009274C1 /* Widgion.app */;
 			productType = "com.apple.product-type.application";
 		};
-		24956CFF307FFFC2009274C1 /* CWTestWidgetExtension */ = {
+		24956CFF307FFFC2009274C1 /* WidgionWidget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 24956D16307FFFC5009274C1 /* Build configuration list for PBXNativeTarget "CWTestWidgetExtension" */;
+			buildConfigurationList = 24956D16307FFFC5009274C1 /* Build configuration list for PBXNativeTarget "WidgionWidget" */;
 			buildPhases = (
 				24956CFC307FFFC2009274C1 /* Sources */,
 				24956CFD307FFFC2009274C1 /* Frameworks */,
@@ -157,13 +157,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				24956D06307FFFC2009274C1 /* CWTestWidget */,
+				24956D06307FFFC2009274C1 /* WidgionWidgets */,
 			);
-			name = CWTestWidgetExtension;
+			name = WidgionWidget;
 			packageProductDependencies = (
 			);
 			productName = CWTestWidgetExtension;
-			productReference = 24956D00307FFFC2009274C1 /* CWTestWidgetExtension.appex */;
+			productReference = 24956D00307FFFC2009274C1 /* WidgionWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -185,7 +185,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 24956CE9307FFF85009274C1 /* Build configuration list for PBXProject "CWTest" */;
+			buildConfigurationList = 24956CE9307FFF85009274C1 /* Build configuration list for PBXProject "Widgion" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -199,8 +199,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				24956CED307FFF85009274C1 /* CWTest */,
-				24956CFF307FFFC2009274C1 /* CWTestWidgetExtension */,
+				24956CED307FFF85009274C1 /* Widgion */,
+				24956CFF307FFFC2009274C1 /* WidgionWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -242,7 +242,7 @@
 /* Begin PBXTargetDependency section */
 		24956D13307FFFC5009274C1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 24956CFF307FFFC2009274C1 /* CWTestWidgetExtension */;
+			target = 24956CFF307FFFC2009274C1 /* WidgionWidget */;
 			targetProxy = 24956D12307FFFC5009274C1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -374,7 +374,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = YES;
-				CODE_SIGN_ENTITLEMENTS = CWTest/CWTest.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Widgion/Widgion.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -385,7 +386,7 @@
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_BLUETOOTH = YES;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
 				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
@@ -396,14 +397,13 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Controls Spotify playback.";
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Reads battery level of connected Bluetooth devices.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.CWTest;
+				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.widgion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -427,7 +427,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = YES;
-				CODE_SIGN_ENTITLEMENTS = CWTest/CWTest.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Widgion/Widgion.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -438,7 +439,7 @@
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_RESOURCE_ACCESS_AUDIO_INPUT = NO;
-				ENABLE_RESOURCE_ACCESS_BLUETOOTH = YES;
+				ENABLE_RESOURCE_ACCESS_BLUETOOTH = NO;
 				ENABLE_RESOURCE_ACCESS_CALENDARS = NO;
 				ENABLE_RESOURCE_ACCESS_CAMERA = NO;
 				ENABLE_RESOURCE_ACCESS_CONTACTS = NO;
@@ -449,14 +450,13 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Controls Spotify playback.";
-				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Reads battery level of connected Bluetooth devices.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.CWTest;
+				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.widgion;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
@@ -496,7 +496,7 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CWTestWidget/Info.plist;
+				INFOPLIST_FILE = WidgionWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CWTestWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -506,13 +506,13 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.CWTest.CWTestWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.widgion.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "CWTestWidget/CWTestWidgetExtension-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "WidgionWidgets/CWTestWidgetExtension-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -541,7 +541,7 @@
 				ENABLE_RESOURCE_ACCESS_PRINTING = NO;
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = CWTestWidget/Info.plist;
+				INFOPLIST_FILE = WidgionWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = CWTestWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -551,13 +551,13 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.CWTest.CWTestWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = widgetprod.widgion.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "CWTestWidget/CWTestWidgetExtension-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "WidgionWidgets/CWTestWidgetExtension-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -566,7 +566,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		24956CE9307FFF85009274C1 /* Build configuration list for PBXProject "CWTest" */ = {
+		24956CE9307FFF85009274C1 /* Build configuration list for PBXProject "Widgion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				24956CF7307FFF87009274C1 /* Debug */,
@@ -575,7 +575,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		24956CF9307FFF87009274C1 /* Build configuration list for PBXNativeTarget "CWTest" */ = {
+		24956CF9307FFF87009274C1 /* Build configuration list for PBXNativeTarget "Widgion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				24956CFA307FFF87009274C1 /* Debug */,
@@ -584,7 +584,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		24956D16307FFFC5009274C1 /* Build configuration list for PBXNativeTarget "CWTestWidgetExtension" */ = {
+		24956D16307FFFC5009274C1 /* Build configuration list for PBXNativeTarget "WidgionWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				24956D17307FFFC5009274C1 /* Debug */,
