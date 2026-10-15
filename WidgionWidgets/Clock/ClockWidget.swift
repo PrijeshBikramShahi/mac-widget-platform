@@ -1,12 +1,8 @@
 import WidgetKit
 import SwiftUI
 
-// Phase 1 clock prototype: digital + analog, hours and minutes only.
-// Question being tested: does WidgetKit honor one timeline entry per minute
-// on the macOS desktop, and how far behind the menu bar clock does it run?
-
-// Flip to test both formats.
-private let use24Hour = true
+// Clock: digital and analog, hours and minutes only (no seconds).
+// One timeline entry per minute, which was measured at 1-2 s behind the menu bar clock.
 
 struct ClockEntry: TimelineEntry {
     let date: Date
@@ -32,7 +28,7 @@ struct DigitalClock: View {
     private var text: String {
         let f = DateFormatter()
         f.locale = Locale(identifier: "en_US_POSIX")
-        f.dateFormat = use24Hour ? "HH:mm" : "h:mm a"
+        f.dateFormat = WidgionConfig.use24Hour ? "HH:mm" : "h:mm a"
         return f.string(from: date)
     }
 
@@ -91,14 +87,13 @@ struct ClockView: View {
     }
 }
 
-
-struct ClockPrototypeWidget: Widget {
+struct ClockWidget: Widget {
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: "ClockPrototype", provider: ClockProvider()) { entry in
+        StaticConfiguration(kind: "ClockWidget", provider: ClockProvider()) { entry in
             ClockView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("Clock Prototype")
+        .configurationDisplayName("Clock")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
