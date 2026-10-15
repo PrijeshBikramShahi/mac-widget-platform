@@ -4,7 +4,7 @@ import Combine
 
 // Spotify mini-player: album art, hover to reveal previous / play-pause / next + volume.
 // Lives in a desktop-level panel (above wallpaper, below app windows).
-// Add to the CWTest APP target. Needs the entitlements already set up:
+// Add to the Widgion APP target. Needs the entitlements already set up:
 //  - Apple Events exception for com.spotify.client
 //  - com.apple.security.network.client
 
@@ -304,5 +304,9 @@ enum MiniPlayerWindow {
 
         p.orderFrontRegardless()
         panel = p
+    }
+    static func toggle() {
+        guard let p = panel else { show(); return }
+        if p.isVisible { p.orderOut(nil) } else { p.orderFrontRegardless() }
     }
 }

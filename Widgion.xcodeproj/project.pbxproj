@@ -41,6 +41,7 @@
 		24956D00307FFFC2009274C1 /* WidgionWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WidgionWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		24956D02307FFFC2009274C1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		24956D04307FFFC2009274C1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		24A59C913080899500443504 /* WidgionWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgionWidget.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -92,6 +93,7 @@
 		24956CE5307FFF85009274C1 = {
 			isa = PBXGroup;
 			children = (
+				24A59C913080899500443504 /* WidgionWidget.entitlements */,
 				24956CF0307FFF85009274C1 /* Widgion */,
 				24956D06307FFFC2009274C1 /* WidgionWidgets */,
 				24956D01307FFFC2009274C1 /* Frameworks */,
@@ -396,6 +398,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Controls Spotify playback.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -449,6 +452,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSAppleEventsUsageDescription = "Controls Spotify playback.";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -480,6 +484,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WidgionWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y2M3HXCZK6;
@@ -497,7 +502,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WidgionWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = CWTestWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = Widgion;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -508,6 +513,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zyotis.widgion.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -525,6 +531,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = WidgionWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y2M3HXCZK6;
@@ -542,7 +549,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WidgionWidgets/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = CWTestWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = Widgion;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -553,6 +560,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.zyotis.widgion.widgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
