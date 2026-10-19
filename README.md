@@ -14,11 +14,7 @@ Built with **SwiftUI · AppKit · WidgetKit**.
 
 ## Preview
 
-> Add a screenshot of your running desktop to `assets/screenshots/desktop.png` to display it here.
-
-<!-- Uncomment once the screenshot exists:
-![Widgion desktop widgets](assets/screenshots/desktop.png)
--->
+![Widgion desktop widgets, including clock, Nepali calendar, weather, battery, and Spotify](assets/screenshots/hero.png)
 
 Widgion places independent, movable widgets directly on your desktop. Choose what to show, set their appearance, and position each component to fit your wallpaper and workflow.
 
@@ -135,26 +131,35 @@ The application uses native Apple frameworks and does not require a third-party 
 
 For known efficiency opportunities and measurements, see [`RESOURCE_AUDIT.md`](RESOURCE_AUDIT.md). The audit identifies potential improvements; do not treat those recommendations as already implemented.
 
-## Screenshots
+## In action
 
-To show the app in action, capture screenshots of your actual setup and add them to the repository, for example:
+### Spotify mini-player
 
-```text
-assets/screenshots/
-├── desktop.png
-├── widgets.png
-├── spotify-player.png
-└── settings.png
-```
+Hover to reveal playback controls while keeping the idle player focused on the artwork.
 
-Then uncomment the preview image near the top of this README. Additional images can be added using ordinary Markdown, e.g.:
+<table>
+  <tr>
+    <td width="50%"><img src="assets/screenshots/spotify_unhovered.png" alt="Spotify player idle state" width="100%"></td>
+    <td width="50%"><img src="assets/screenshots/spotify_hovered.png" alt="Spotify player on hover" width="100%"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Idle</sub></td>
+    <td align="center"><sub>Hover</sub></td>
+  </tr>
+</table>
 
-```markdown
-![Spotify mini-player](assets/screenshots/spotify-player.png)
-![Widgion settings](assets/screenshots/settings.png)
-```
+### Personalize your desktop
 
-For a clearer GitHub preview, use a high-resolution full-desktop screenshot and crop separate images for the small widgets. Avoid shrinking several tiny widgets into a single narrow comparison image.
+![Widgion appearance settings](assets/screenshots/settings.appearance.png)
+
+<details>
+<summary>More settings: widget management</summary>
+
+![Widgion widget settings](assets/screenshots/settings_widgets.png)
+
+</details>
+
+All imagery shows the actual application. Other settings screenshots are available in [`assets/screenshots/`](assets/screenshots/).
 
 ## Current scope
 
